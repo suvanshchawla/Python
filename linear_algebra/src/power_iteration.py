@@ -52,7 +52,7 @@ def power_iteration(
     # or when we have small changes from one iteration to next.
 
     convergence = False
-    lamda_previous = 0
+    lambda_previous = 0
     iterations = 0
     error = 1e12
 
@@ -63,22 +63,22 @@ def power_iteration(
         vector = w / np.linalg.norm(w)
         # Find rayleigh quotient
         # (faster than usual b/c we know vector is normalized already)
-        vectorH = vector.conj().T if is_complex else vector.T
-        lamda = np.dot(vectorH, np.dot(input_matrix, vector))
+        vector_h = vector.conj().T if is_complex else vector.T
+        lambda_ = np.dot(vector_h, np.dot(input_matrix, vector))
 
         # Check convergence.
-        error = np.abs(lamda - lamda_previous) / lamda
+        error = np.abs(lambda_ - lambda_previous) / lambda_
         iterations += 1
 
         if error <= error_tol or iterations >= max_iterations:
             convergence = True
 
-        lamda_previous = lamda
+        lambda_previous = lambda_
 
     if is_complex:
-        lamda = np.real(lamda)
+        lambda_ = np.real(lambda_)
 
-    return lamda, vector
+    return float(lambda_), vector
 
 
 def test_power_iteration() -> None:
@@ -94,12 +94,13 @@ def test_power_iteration() -> None:
     complex_vector = np.array([41, 4, 20]).astype(np.complex128)
 
     for problem_type in ["real", "complex"]:
-        if problem_type == "real":
-            input_matrix = real_input_matrix
-            vector = real_vector
-        elif problem_type == "complex":
-            input_matrix = complex_input_matrix
-            vector = complex_vector
+        match problem_type:
+            case "real":
+                input_matrix = real_input_matrix
+                vector = real_vector
+            case "complex":
+                input_matrix = complex_input_matrix
+                vector = complex_vector
 
         # Our implementation.
         eigen_value, eigen_vector = power_iteration(input_matrix, vector)

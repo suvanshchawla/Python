@@ -41,11 +41,12 @@ Consider the following tenth degree polynomial generating function:
 
 Find the sum of FITs for the BOPs.
 """
+
 from __future__ import annotations
 
-from typing import Callable, Union
+from collections.abc import Callable
 
-Matrix = list[list[Union[float, int]]]
+Matrix = list[list[float | int]]
 
 
 def solve(matrix: Matrix, vector: Matrix) -> Matrix:
@@ -84,8 +85,7 @@ def solve(matrix: Matrix, vector: Matrix) -> Matrix:
         if augmented[pivot_row][col] == 0:
             col += 1
             continue
-        else:
-            augmented[row], augmented[pivot_row] = augmented[pivot_row], augmented[row]
+        augmented[row], augmented[pivot_row] = augmented[pivot_row], augmented[row]
 
         for row2 in range(row + 1, size):
             ratio = augmented[row2][col] / augmented[row][col]
